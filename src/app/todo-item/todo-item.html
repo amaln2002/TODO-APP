@@ -1,0 +1,32 @@
+<div class="task-item" [class.done]="task().completed">
+
+  <button
+    class="check-btn"
+    [class.checked]="task().completed"
+    (click)="onToggle()">
+    @if (task().completed) { ✓ }
+  </button>
+
+  <span class="task-title">{{ task().title }}</span>
+
+  <button class="del-btn" (click)="onDeleteClick()">✕</button>
+
+</div>
+
+<!-- confirmation modal -->
+@if (showConfirm) {
+  <div class="overlay">
+    <div class="modal">
+
+      <div class="modal-icon">🗑️</div>
+      <h3 class="modal-title">Delete task?</h3>
+      <p class="modal-msg">"{{ task().title }}" will be permanently removed.</p>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="onCancelDelete()">Cancel</button>
+        <button class="btn-delete" (click)="onConfirmDelete()">Delete</button>
+      </div>
+
+    </div>
+  </div>
+}

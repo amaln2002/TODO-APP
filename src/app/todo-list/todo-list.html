@@ -1,0 +1,50 @@
+<div class="search-wrap">
+  <div class="search-bar">
+
+    <input
+      type="text"
+      placeholder="Search all tasks"
+      [(ngModel)]="searchQuery"
+    />
+    @if (searchQuery) {
+      <button class="clear-btn" (click)="searchQuery = ''">✕</button>
+    }
+  </div>
+</div>
+
+<div class="main">
+
+  <h2>Tasks</h2>
+  <p class="remaining">{{ remainingCount }} tasks remaining</p>
+
+  <div class="add-row">
+    <input
+      type="text"
+      placeholder="Add a new task"
+      [(ngModel)]="newTaskTitle"
+      (keydown)="onKeyDown($event)"
+    />
+    <button (click)="addTask()">+</button>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-btn" [class.active]="activeFilter === 'all'"    (click)="setFilter('all')">All</button>
+    <button class="filter-btn" [class.active]="activeFilter === 'active'" (click)="setFilter('active')">Active</button>
+    <button class="filter-btn" [class.active]="activeFilter === 'done'"   (click)="setFilter('done')">Done</button>
+  </div>
+
+  @for (task of filteredTasks; track task.id) {
+    <app-todo-item
+      [task]="task"
+      (deleted)="onDelete($event)"
+      (toggled)="onToggle($event)"
+    />
+  }
+
+  @if (filteredTasks.length === 0 && searchQuery) {
+    <p class="empty">No tasks match "{{ searchQuery }}"</p>
+  } @else if (filteredTasks.length === 0) {
+    <p class="empty">No tasks for this day</p>
+  }
+
+</div>
