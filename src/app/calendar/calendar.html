@@ -1,6 +1,4 @@
 <div class="calendar-wrap">
-
-  <!-- week header -->
   <div class="week-header">
     <button class="nav-btn" (click)="prevWeek()">&#8249;</button>
 
@@ -16,7 +14,6 @@
 
   <div class="divider"></div>
 
-  <!-- day pills -->
   <div class="days-row">
     @for (day of days; track day.date) {
       <button

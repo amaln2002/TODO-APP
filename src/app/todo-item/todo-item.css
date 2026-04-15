@@ -69,7 +69,7 @@
 
 .del-btn:hover { color: #c0392b; }
 
-/* overlay behind modal */
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -86,7 +86,7 @@
   to   { opacity: 1; }
 }
 
-/* modal card */
+
 .modal {
   background: white;
   border-radius: 16px;

@@ -14,14 +14,12 @@ interface CalendarDay {
 })
 export class CalendarStripComponent implements OnInit {
 
-  // receives selected date from parent
-  selectedDate = input.required<string>();
 
-  // sends clicked date to parent
+  selectedDate = input.required<string>();
   dateSelected = output<string>();
 
   days: CalendarDay[] = [];
-  weekOffset = 0;         // 0 = current week, -1 = last week, +1 = next week
+  weekOffset = 0;         
   weekLabel = '';
   today = new Date().toISOString().split('T')[0];
 
@@ -29,17 +27,28 @@ export class CalendarStripComponent implements OnInit {
     this.buildWeek();
   }
 
-  // builds 7 days starting from Monday of the current week + offset
-  buildWeek(): void {
-    const now = new Date();
+buildWeek(): void {
+  // 1. Get TODAY
+  const now = new Date();  // e.g. Wed Oct 16, 2024
 
-    // go to Monday of the current week
-    const dayOfWeek = now.getDay();                    // 0=Sun, 1=Mon...
-    const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + diffToMonday + this.weekOffset * 7);
+  // 2. What day is today? (0=Sun,1=Mon,2=Tue,3=Wed...)
+  const dayOfWeek = now.getDay();  // e.g. 3 (Wed)
 
-    // build 7 days Mon → Sun
+  // 3. How many days back to Monday?
+  // Normal: Mon(1)=0, Tue(2)=-1, Wed(3)=-2, Thu(4)=-3...
+  // Sun(0) special: -6 days to prev Mon
+  const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+  // Wed(3): 1-3= -2 ✓
+
+  // 4. Start from today, copy
+  const monday = new Date(now);
+
+  // 5. Jump to Monday: today + back_days + week_offset*7
+  monday.setDate(now.getDate() + diffToMonday + this.weekOffset * 7);
+  // weekOffset=0: Wed16 + (-2) = Mon14
+  // weekOffset=1: Wed16 + (-2) +7 = Mon21 (next)
+
+
     this.days = [];
     const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
@@ -53,7 +62,7 @@ export class CalendarStripComponent implements OnInit {
       });
     }
 
-    // build week label e.g. "Week 16 of 2026"
+
     const weekNum = this.getWeekNumber(monday);
     this.weekLabel = `Week ${weekNum} of ${monday.getFullYear()}`;
   }
@@ -74,7 +83,7 @@ export class CalendarStripComponent implements OnInit {
   }
 
   onDayClick(date: string): void {
-    this.dateSelected.emit(date);   // tell parent which day was clicked
+    this.dateSelected.emit(date);   
   }
 
   isToday(date: string): boolean {
@@ -85,7 +94,6 @@ export class CalendarStripComponent implements OnInit {
     return date === this.selectedDate();
   }
 
-  // calculates ISO week number
   private getWeekNumber(date: Date): number {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);

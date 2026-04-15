@@ -20,7 +20,7 @@ export class TodoListComponent implements OnInit {
   newTaskTitle = '';
   searchQuery = '';
   activeFilter: Filter = 'all';
-  selectedDate = new Date().toISOString().split('T')[0];  // today
+  selectedDate = new Date().toISOString().split('T')[0];  
 
   constructor(private todoService: TodoService) {}
 
@@ -28,7 +28,6 @@ export class TodoListComponent implements OnInit {
     this.loadTasks();
   }
 
-  // called when user clicks a day in the calendar
   onDateSelected(date: string): void {
     this.selectedDate = date;
     this.loadTasks();
@@ -63,7 +62,7 @@ export class TodoListComponent implements OnInit {
     this.activeFilter = filter;
   }
 
-  // formats selectedDate for display e.g. "Monday, April 13"
+
   get formattedDate(): string {
     const d = new Date(this.selectedDate + 'T00:00:00');
     return d.toLocaleDateString('en-US', {
