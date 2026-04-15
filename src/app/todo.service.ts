@@ -3,9 +3,8 @@ import { Task } from './task.model';
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
-
   private tasks: Task[] = [];
-
+  
   constructor() {
     this.loadFromStorage();
   }
@@ -41,8 +40,14 @@ export class TodoService {
     localStorage.setItem('ng_tasks', JSON.stringify(this.tasks));
   }
 
-  private loadFromStorage(): void {
-    const saved = localStorage.getItem('ng_tasks');
-    this.tasks = saved ? JSON.parse(saved) : [];
+private loadFromStorage(): void {
+  const saved = localStorage.getItem('ng_tasks');
+  
+  if (saved !== null) {
+    const parsedTasks = JSON.parse(saved);
+    this.tasks = parsedTasks;
+  } else {
+    this.tasks = [];
   }
+}
 }

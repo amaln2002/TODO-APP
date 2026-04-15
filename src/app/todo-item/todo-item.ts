@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
+import { NgClass } from '@angular/common';   
 import { Task } from '../task.model';
 
 @Component({
   selector: 'app-todo-item',
   standalone: true,
-  imports: [],
+  imports: [NgClass],                     
   templateUrl: './todo-item.html',
   styleUrl: './todo-item.css'
 })
@@ -14,10 +15,10 @@ export class TodoItemComponent {
   deleted = output<string>();
   toggled = output<string>();
 
-  showConfirm = false;   // ← controls the confirm box
+  showConfirm = false;
 
   onDeleteClick(): void {
-    this.showConfirm = true;   // ← show the modal
+    this.showConfirm = true;
   }
 
   onConfirmDelete(): void {
@@ -26,7 +27,7 @@ export class TodoItemComponent {
   }
 
   onCancelDelete(): void {
-    this.showConfirm = false;  // ← hide without deleting
+    this.showConfirm = false;
   }
 
   onToggle(): void {

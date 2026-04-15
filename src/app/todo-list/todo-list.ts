@@ -2,14 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TodoService } from '../todo.service';
 import { TodoItemComponent } from '../todo-item/todo-item';
+import { CalendarStripComponent } from '../calendar/calendar';
 import { Task } from '../task.model';
 
 type Filter = 'all' | 'active' | 'done';
 
 @Component({
-  selector: 'app-todo-list',
+  selector: 'todo-list',
   standalone: true,
-  imports: [FormsModule, TodoItemComponent],
+  imports: [FormsModule, TodoItemComponent, CalendarStripComponent],
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.css'
 })
@@ -19,11 +20,17 @@ export class TodoListComponent implements OnInit {
   newTaskTitle = '';
   searchQuery = '';
   activeFilter: Filter = 'all';
-  selectedDate = new Date().toISOString().split('T')[0];
+  selectedDate = new Date().toISOString().split('T')[0];  // today
 
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
+    this.loadTasks();
+  }
+
+  // called when user clicks a day in the calendar
+  onDateSelected(date: string): void {
+    this.selectedDate = date;
     this.loadTasks();
   }
 
@@ -54,6 +61,16 @@ export class TodoListComponent implements OnInit {
 
   setFilter(filter: Filter): void {
     this.activeFilter = filter;
+  }
+
+  // formats selectedDate for display e.g. "Monday, April 13"
+  get formattedDate(): string {
+    const d = new Date(this.selectedDate + 'T00:00:00');
+    return d.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 
   get remainingCount(): number {

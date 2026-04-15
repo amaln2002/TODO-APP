@@ -1,0 +1,33 @@
+<div class="calendar-wrap">
+
+  <!-- week header -->
+  <div class="week-header">
+    <button class="nav-btn" (click)="prevWeek()">&#8249;</button>
+
+    <div class="week-center">
+      <span class="week-label">{{ weekLabel }}</span>
+      <button class="current-week-btn" (click)="goToCurrentWeek()">
+        Go to current week
+      </button>
+    </div>
+
+    <button class="nav-btn" (click)="nextWeek()">&#8250;</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- day pills -->
+  <div class="days-row">
+    @for (day of days; track day.date) {
+      <button
+        class="day-btn"
+        [class.selected]="isSelected(day.date)"
+        [class.today]="isToday(day.date)"
+        (click)="onDayClick(day.date)">
+        <span class="day-name">{{ day.dayName }}</span>
+        <span class="day-number">{{ day.dayNumber }}</span>
+      </button>
+    }
+  </div>
+
+</div>

@@ -5,6 +5,6 @@ import { TodoListComponent } from './todo-list/todo-list';
   selector: 'app-root',
   standalone: true,
   imports: [TodoListComponent],
-  template: `<app-todo-list />`
+  template: `<todo-list />`
 })
-export class App {}  // ← make sure "export" is here
+export class App {}  

@@ -1,6 +1,11 @@
+
+<app-calendar
+  [selectedDate]="selectedDate"
+  (dateSelected)="onDateSelected($event)"
+/>
+
 <div class="search-wrap">
   <div class="search-bar">
-
     <input
       type="text"
       placeholder="Search all tasks"
@@ -13,9 +18,9 @@
 </div>
 
 <div class="main">
-
-  <h2>Tasks</h2>
+ <h2>{{ formattedDate }}</h2>
   <p class="remaining">{{ remainingCount }} tasks remaining</p>
+ 
 
   <div class="add-row">
     <input
