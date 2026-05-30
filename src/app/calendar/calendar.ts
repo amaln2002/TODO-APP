@@ -1,9 +1,9 @@
 import { Component, input, output, OnInit } from '@angular/core';
 
 interface CalendarDay {
-  date: string;       
-  dayName: string;  
-  dayNumber: number;  
+  date: string;
+  dayName: string;
+  dayNumber: number;
 }
 
 @Component({
@@ -14,40 +14,26 @@ interface CalendarDay {
 })
 export class CalendarStripComponent implements OnInit {
 
-
   selectedDate = input.required<string>();
   dateSelected = output<string>();
 
   days: CalendarDay[] = [];
-  weekOffset = 0;         
+  weekOffset = 0;
   weekLabel = '';
-  today = new Date().toISOString().split('T')[0];
+  today = '';
 
   ngOnInit(): void {
+    this.today = this.toDateString(new Date());
     this.buildWeek();
   }
 
-buildWeek(): void {
-  // 1. Get TODAY
-  const now = new Date();  // e.g. Wed Oct 16, 2024
+  buildWeek(): void {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
 
-  // 2. What day is today? (0=Sun,1=Mon,2=Tue,3=Wed...)
-  const dayOfWeek = now.getDay();  // e.g. 3 (Wed)
-
-  // 3. How many days back to Monday?
-  // Normal: Mon(1)=0, Tue(2)=-1, Wed(3)=-2, Thu(4)=-3...
-  // Sun(0) special: -6 days to prev Mon
-  const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
-  // Wed(3): 1-3= -2 ✓
-
-  // 4. Start from today, copy
-  const monday = new Date(now);
-
-  // 5. Jump to Monday: today + back_days + week_offset*7
-  monday.setDate(now.getDate() + diffToMonday + this.weekOffset * 7);
-  // weekOffset=0: Wed16 + (-2) = Mon14
-  // weekOffset=1: Wed16 + (-2) +7 = Mon21 (next)
-
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diffToMonday + this.weekOffset * 7);
 
     this.days = [];
     const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -56,12 +42,11 @@ buildWeek(): void {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
       this.days.push({
-        date: d.toISOString().split('T')[0],
+        date: this.toDateString(d),
         dayName: dayNames[i],
         dayNumber: d.getDate()
       });
     }
-
 
     const weekNum = this.getWeekNumber(monday);
     this.weekLabel = `Week ${weekNum} of ${monday.getFullYear()}`;
@@ -83,7 +68,7 @@ buildWeek(): void {
   }
 
   onDayClick(date: string): void {
-    this.dateSelected.emit(date);   
+    this.dateSelected.emit(date);
   }
 
   isToday(date: string): boolean {
@@ -92,6 +77,13 @@ buildWeek(): void {
 
   isSelected(date: string): boolean {
     return date === this.selectedDate();
+  }
+
+  private toDateString(d: Date): string {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private getWeekNumber(date: Date): number {

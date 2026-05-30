@@ -1,13 +1,21 @@
-
-<div [ngClass]="{ 'task-item': true, 'done': task().completed }">
+<div [ngClass]="{ 'task-item': true, 'done': task().taskStatus === 'COMPLETED' }">
 
   <button
-    [ngClass]="{ 'check-btn': true, 'checked': task().completed }"
+    [ngClass]="{ 'check-btn': true, 'checked': task().taskStatus === 'COMPLETED' }"
     (click)="onToggle()">
-    @if (task().completed) { ✓ }
+    @if (task().taskStatus === 'COMPLETED') { ✓ }
   </button>
 
-  <span class="task-title">{{ task().title }}</span>
+  @if (isEditing) {
+    <input
+      class="edit-input"
+      [(ngModel)]="editText"
+      (keydown)="onEditKeyDown($event)"
+      (blur)="saveEdit()"
+    />
+  } @else {
+    <span class="task-title" (click)="startEdit()">{{ task().taskText }}</span>
+  }
 
   <button class="del-btn" (click)="onDeleteClick()">✕</button>
 
@@ -17,7 +25,7 @@
   <div class="overlay">
     <div class="modal">
       <h3 class="modal-title">Delete task?</h3>
-      <p class="modal-msg">"{{ task().title }}" will be permanently removed.</p>
+      <p class="modal-msg">"{{ task().taskText }}" will be permanently removed.</p>
       <div class="modal-actions">
         <button class="btn-cancel" (click)="onCancelDelete()">Cancel</button>
         <button class="btn-delete" (click)="onConfirmDelete()">Delete</button>

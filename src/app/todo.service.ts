@@ -1,53 +1,38 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Task } from './task.model';
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
-  private tasks: Task[] = [];
-  
-  constructor() {
-    this.loadFromStorage();
+
+  private api = 'http://localhost:8080/api/tasks';
+
+  constructor(private http: HttpClient) {}
+
+  getTasksByDate(date: string): Observable<Task[]> {
+    const params = new HttpParams().set('date', date);
+    return this.http.get<Task[]>(`${this.api}/date`, { params });
   }
 
-  getTasks(date: string): Task[] {
-    return this.tasks.filter(t => t.date === date);
+  addTask(taskText: string, date: string): Observable<Task> {
+    const body = {
+      taskText,
+      taskDate: date,
+      taskStatus: 'NOT_COMPLETED'
+    };
+    return this.http.post<Task>(this.api, body);
   }
 
-  addTask(title: string, date: string): void {
-    this.tasks.push({
-      id: crypto.randomUUID(),
-      title,
-      completed: false,
-      date
-    });
-    this.save();
+  deleteTask(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.api}/${id}`);
   }
 
-  deleteTask(id: string): void {
-    this.tasks = this.tasks.filter(t => t.id !== id);
-    this.save();
+  toggleTask(id: number): Observable<Task> {
+    return this.http.put<Task>(`${this.api}/${id}/toggle`, {});
   }
 
-  toggleTask(id: string): void {
-    const task = this.tasks.find(t => t.id === id);
-    if (task) {
-      task.completed = !task.completed;
-      this.save();
-    }
+  updateTask(id: number, taskText: string): Observable<Task> {
+    return this.http.put<Task>(`${this.api}/${id}`, { taskText });
   }
-
-  private save(): void {
-    localStorage.setItem('ng_tasks', JSON.stringify(this.tasks));
-  }
-
-private loadFromStorage(): void {
-  const saved = localStorage.getItem('ng_tasks');
-  
-  if (saved !== null) {
-    const parsedTasks = JSON.parse(saved);
-    this.tasks = parsedTasks;
-  } else {
-    this.tasks = [];
-  }
-}
 }

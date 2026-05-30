@@ -1,4 +1,3 @@
-
 <app-calendar
   [selectedDate]="selectedDate"
   (dateSelected)="onDateSelected($event)"
@@ -18,9 +17,8 @@
 </div>
 
 <div class="main">
- <h2>{{ formattedDate }}</h2>
+  <h2>{{ formattedDate }}</h2>
   <p class="remaining">{{ remainingCount }} tasks remaining</p>
- 
 
   <div class="add-row">
     <input
@@ -43,6 +41,7 @@
       [task]="task"
       (deleted)="onDelete($event)"
       (toggled)="onToggle($event)"
+      (edited)="onEdit($event)"
     />
   }
 
@@ -51,5 +50,4 @@
   } @else if (filteredTasks.length === 0) {
     <p class="empty">No tasks for this day</p>
   }
-
 </div>
